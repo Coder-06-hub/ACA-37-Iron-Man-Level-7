@@ -3,11 +3,14 @@ var bg, bgImage;
 var Iron;
 var edges;
 var brickGroup, brickImage;
+var diamondsGroup, diamondImage;
+var coinScore=0;
 
 function preload() {
   bgImage = loadImage("images/bg.jpg");
  Iron =loadImage("images/iron.png")
  brickImage= loadImage("images/stone.png");
+ diamondImage= loadImage("images/diamond.png");
 }
 
 function setup() {
@@ -21,6 +24,7 @@ function setup() {
  IronMan.scale=0.3;
  IronMan.debug=true;
  brickGroup=new Group();
+ diamondsGroup= new Group();
  IronMan.setCollider("rectangle",100,0,200,400);
 }
 
@@ -56,7 +60,21 @@ IronMan.y=50;
       IronMan.collide(temp);
     }
   }
-    drawSprites();
+  for(var i=0;i<(diamondsGroup).length;i++)
+  {
+      var temp=(diamondsGroup).get(i);
+      if(temp.isTouching(IronMan))
+      {
+          coinScore++;
+          temp.destroy();
+          temp=null;
+      }
+  }
+generateDiamonds();
+drawSprites();
+textSize(20);
+fill("brown");
+text("Coins Collected "+coinScore,400,50)
    
 }
 function generateBricks() {
@@ -68,5 +86,19 @@ function generateBricks() {
     brick.lifetime = 250;
     brickGroup.add(brick);
   }
+}
+
+function generateDiamonds()
+{
+    if(frameCount%50==0)
+    {
+var diamonds= createSprite(1200,120,40,10);
+diamonds.addAnimation("diamond",diamondImage);
+diamonds.x = random(50, 850);
+diamonds.scale = 0.5;
+diamonds.velocityY = 3;
+diamonds.lifetime=1200;
+diamondsGroup.add(diamonds);
+    }
 }
 
