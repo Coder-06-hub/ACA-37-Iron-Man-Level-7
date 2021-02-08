@@ -49,12 +49,12 @@ function setup()
 
     // Creation Of IronMan Sprite
     IronMan=createSprite(200,350,20,50);
-    IronMan.addImage(Iron);
+    IronMan.addImage(IronImage);
     IronMan.scale=0.3;
     IronMan.debug=true;
 
     // Creation Of Groups
-    brickGroup=new Group();
+    stoneGroup=new Group();
     diamondsGroup= new Group();
     obstacleGroup= new Group();
 
@@ -64,6 +64,12 @@ function setup()
 
 function draw()
 {
+    
+    if(gameState=="PLAY")
+    {
+        IronMan.setCollider("rectangle",100,0,200,400);
+        IronMan.scale=0.3;
+
     // Scroll Background
     if(bg.x<100)
     {
@@ -107,9 +113,9 @@ function draw()
     generateStones();
 
     // Make IronMan Collide With Stones
-    for(var i = 0; i < brickGroup.length; i++)
+    for(var i = 0; i < stoneGroup.length; i++)
     {
-       var temp = brickGroup.get(i);
+       var temp = stoneGroup.get(i);
        if (temp.isTouching(IronMan))
        {
           IronMan.collide(temp);
@@ -151,6 +157,32 @@ function draw()
 
     // Calling The FUNCTION To Generate Obstacles
     generateObstacles();
+    if(coinScore==-11)
+    {
+        gameState="END";
+    }
+
+    if(IronMan.y>=610)
+    {
+        gameState="END";
+    }
+}
+
+// Ending Of If Statement
+else if(gameState=="END")
+{
+    bg.velocityX=0;
+    IronMan.velocityY=0;
+    IronMan.velocityX=0;
+    obstacleGroup.setVelocityXEach(0);
+    obstacleGroup.setLifetimeEach(-1);
+    diamondsGroup.setVelocityXEach(0);
+    diamondsGroup.setLifetimeEach(-1);
+    stoneGroup.setVelocityXEach(0);
+    stoneGroup.setLifetimeEach(-1);
+    IronMan.scale=0.3;
+    IronMan.y=350;
+}
 
     // Calling The FUNCTION To Draw Sprites
     drawSprites();
@@ -171,14 +203,14 @@ function generateStones()
    if(frameCount%60==0) 
    {
       // Creating Bricks After Every 60 FrameCounts
-      var brick = createSprite(1200, 10, 40, 10);
-      brick.x = random(50, 850);
-      brick.addImage(brickImage);
-      brick.velocityY = 5;
+      var stone = createSprite(1200, 10, 40, 10);
+      stone.x = random(50, 850);
+      stone.addImage(stoneImage);
+      stone.velocityY = 5;
 
       // To Prevent The Memory Leakage Problem
-      brick.lifetime = 250;
-      brickGroup.add(brick);
+      stone.lifetime = 250;
+      stoneGroup.add(stone);
    }
 }
 
