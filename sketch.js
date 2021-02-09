@@ -34,6 +34,9 @@ function preload()
 
     // Loading Spike Image
     spikeImage= loadImage("images/spikes.png");
+
+    // Loading Restart Image
+    restartImage=loadImage("images/restart.png");
 }
 
 function setup() 
@@ -58,6 +61,11 @@ function setup()
     diamondsGroup= new Group();
     obstacleGroup= new Group();
 
+    // Creation Of Restart Button
+    restart=createSprite(500,300);
+    restart.addImage(restartImage);
+    restart.visible=false;
+
     // Creation Of Collider For IronMan
     IronMan.setCollider("rectangle",100,0,200,400);
 }
@@ -69,6 +77,7 @@ function draw()
     {
         IronMan.setCollider("rectangle",100,0,200,400);
         IronMan.scale=0.3;
+        bg.velocityX=-6;
 
     // Scroll Background
     if(bg.x<100)
@@ -157,7 +166,7 @@ function draw()
 
     // Calling The FUNCTION To Generate Obstacles
     generateObstacles();
-    if(coinScore==-11)
+    if(coinScore<=-11)
     {
         gameState="END";
     }
@@ -182,6 +191,11 @@ else if(gameState=="END")
     stoneGroup.setLifetimeEach(-1);
     IronMan.scale=0.3;
     IronMan.y=350;
+    restart.visible=true;
+    if(mousePressedOver(restart))
+    {
+        restartGame();
+    }
 }
 
     // Calling The FUNCTION To Draw Sprites
@@ -204,9 +218,9 @@ function generateStones()
    {
       // Creating Bricks After Every 60 FrameCounts
       var stone = createSprite(1200, 10, 40, 10);
-      stone.x = random(50, 850);
+      stone.x = random(50,850);
       stone.addImage(stoneImage);
-      stone.velocityY = 5;
+      stone.velocityY=6;
 
       // To Prevent The Memory Leakage Problem
       stone.lifetime = 250;
@@ -217,7 +231,7 @@ function generateStones()
 // FUNCTION For Generating The Diamonds
 function generateDiamonds()
 {
-    if(frameCount%50==0)
+    if(frameCount%70==0)
     {
         // Creating Bricks After Every 50 FrameCounts
         var diamonds= createSprite(1200, 0, 40, 10);
@@ -248,4 +262,14 @@ function generateObstacles()
         spikes.lifetime = 600;
         obstacleGroup.add(spikes);
     }
+}
+
+function restartGame()
+{
+    gameState="PLAY";
+    obstacleGroup.destroyEach();
+    stoneGroup.destroyEach();
+    diamondsGroup.destroyEach();
+    coinScore=0;
+    restart.visible=false;
 }
